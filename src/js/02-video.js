@@ -11,21 +11,26 @@ const player = new Vimeo.Player(iframe);
 player.on('timeupdate', throttle(localStTime, 1000));
 
 function localStTime(currentTime) {
-  localStorage.setItem('time', JSON.stringify(currentTime));
+  if (currentTime) {
+    localStorage.setItem('time', JSON.stringify(currentTime));
+  }
 }
 
 const second = localStorage.getItem('time');
-const saveTime = JSON.parse(second);
 
-player
-  .setCurrentTime(saveTime.seconds)
-  .then(function (seconds) {})
-  .catch(function (error) {
-    switch (error.name) {
-      case 'RangeError':
-        break;
+if (second) {
+  const saveTime = JSON.parse(second);
 
-      default:
-        break;
-    }
-  });
+  player
+    .setCurrentTime(saveTime.seconds)
+    .then(function (seconds) {})
+    .catch(function (error) {
+      switch (error.name) {
+        case 'RangeError':
+          break;
+
+        default:
+          break;
+      }
+    });
+}
