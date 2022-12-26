@@ -1,6 +1,6 @@
 import throttle from 'lodash.throttle';
-import { save, load } from './storage';
-// import load from './storage';
+import { save } from './storage';
+import { load } from './storage';
 
 const refs = {
   form: document.querySelector('.js-feadback-form'),
@@ -19,35 +19,56 @@ refs.form.addEventListener('submit', onFormSubmit);
 refs.form.addEventListener('input', throttle(onEmailAndMessageInput, 500));
 
 populateTextarea();
-// load(key)
 
 function onFormSubmit(evt) {
   evt.preventDefault();
+
+  if (formData.email === '') {
+    return;
+  }
+  if (formData.message === '') {
+    return;
+  }
+
   console.log(populateTextarea());
   evt.currentTarget.reset();
 
   localStorage.removeItem(STORAGE_KEY);
+
+  formData.email = '';
+  formData.message = '';
 }
 
 function onEmailAndMessageInput(evt) {
   formData[evt.target.name] = evt.target.value;
-  //   console.log(formData);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-  //   save(STORAGE_KEY, JSON.stringify(formData))
-//   save();
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+//   save(STORAGE_KEY, formData);
 }
 
 function populateTextarea() {
+//     load(STORAGE_KEY);
+
+//   refs.input.value = serializedState.email;
+//   refs.textarea.value = serializedState.message;
+
+//   formData.email = serializedState.email;
+//   formData.message = serializedState.message;
+
+//   return serializedState;
+
   const savedMessage = localStorage.getItem(STORAGE_KEY);
-  // load(savedMessage)
+
+
   if (savedMessage) {
     const savedEmailAndPassword = JSON.parse(savedMessage);
-
-    // load(savedEmailAndPassword);
 
     refs.input.value = savedEmailAndPassword.email;
     refs.textarea.value = savedEmailAndPassword.message;
 
-    return savedEmailAndPassword
+    formData.email = savedEmailAndPassword.email;
+    formData.message = savedEmailAndPassword.message;
+
+    return savedEmailAndPassword;
   }
 }
